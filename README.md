@@ -1,7 +1,4 @@
-# Wheel of Names
-
-A modern, customizable React application that replicates the functionality of wheelofnames.com. Built with React, TypeScript, and Vite.
-
+# Wheel of Fate
 ## Features
 
 - Interactive spinning wheel with smooth animations
