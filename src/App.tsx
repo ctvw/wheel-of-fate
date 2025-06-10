@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Wheel } from './components/Wheel';
 import { NameEntry } from './components/NameEntry';
 import { NameList } from './components/NameList';
@@ -15,12 +15,42 @@ function App() {
   const [isDarkMode, setIsDarkMode] = useLocalStorage('darkMode', false);
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
   const [announcement, setAnnouncement] = useState<string | null>(null);
+  const jaredAudioRef = useRef<HTMLAudioElement | null>(null);
 
   const { rotation, isSpinning, winner, spin, generateSegments } = useWheelLogic(names);
+
+  // Initialize audio
+  useEffect(() => {
+    // Create audio element
+    const audio = new Audio();
+    audio.src = '/wheel-of-fate/sadtrombone.mp3';
+    audio.preload = 'auto';
+    
+    // Add event listeners for debugging
+    audio.addEventListener('canplaythrough', () => {
+      console.log('Audio is ready to play');
+    });
+    
+    audio.addEventListener('error', (e) => {
+      console.error('Audio error:', e);
+    });
+
+    jaredAudioRef.current = audio;
+
+    // Cleanup
+    return () => {
+      if (jaredAudioRef.current) {
+        jaredAudioRef.current.pause();
+        jaredAudioRef.current = null;
+      }
+    };
+  }, []);
 
   // Handle winner announcement and effects
   useEffect(() => {
     if (winner) {
+      console.log('Winner:', winner.text); // Debug log
+      
       // Clear any existing timeouts
       const timeoutId = setTimeout(() => {
         setShowConfetti(false);
@@ -31,6 +61,30 @@ function App() {
       // Show celebration effects
       setShowConfetti(true);
       setAnnouncement(`🎉 ${winner.text} wins! 🎉`);
+      
+      // Play special sound for Jared
+      if (winner.text.toLowerCase() === 'jared') {
+        console.log('Attempting to play Jared sound'); // Debug log
+        if (jaredAudioRef.current) {
+          // Reset audio to start
+          jaredAudioRef.current.currentTime = 0;
+          // Play audio
+          const playPromise = jaredAudioRef.current.play();
+          
+          if (playPromise !== undefined) {
+            playPromise
+              .then(() => {
+                console.log('Audio playback started successfully');
+              })
+              .catch(error => {
+                console.error('Error playing Jared sound:', error);
+              });
+          }
+        } else {
+          console.error('Audio element not initialized');
+        }
+      }
+
       setHistory(prev => [
         {
           id: crypto.randomUUID(),
