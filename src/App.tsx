@@ -63,7 +63,7 @@ function App() {
       setAnnouncement(`🎉 ${winner.text} wins! 🎉`);
       
       // Play special sound for Jared
-      if (winner.text.toLowerCase() === 'jared') {
+      if (winner.text.toLowerCase().includes('jared')) {
         console.log('Attempting to play Jared sound'); // Debug log
         if (jaredAudioRef.current) {
           // Reset audio to start
