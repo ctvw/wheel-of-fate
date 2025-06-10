@@ -56,6 +56,14 @@ function App() {
     setNames(prev => prev.filter(name => name.id !== id));
   };
 
+  const handleRemoveHistoryEntry = (id: string) => {
+    setHistory(prev => prev.filter(entry => entry.id !== id));
+  };
+
+  const handleClearHistory = () => {
+    setHistory([]);
+  };
+
   const toggleDarkMode = () => {
     setIsDarkMode(!isDarkMode);
   };
@@ -157,7 +165,11 @@ function App() {
           <div style={{ flex: '1', minWidth: '300px' }}>
             <NameEntry onAddName={handleAddName} isDarkMode={isDarkMode} />
             <NameList names={names} onRemoveName={handleRemoveName} />
-            <History entries={history} />
+            <History 
+              entries={history} 
+              onRemoveEntry={handleRemoveHistoryEntry}
+              onClearHistory={handleClearHistory}
+            />
           </div>
         </div>
       </div>

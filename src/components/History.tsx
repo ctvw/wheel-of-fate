@@ -2,12 +2,31 @@ import { HistoryEntry } from '../types';
 
 interface HistoryProps {
   entries: HistoryEntry[];
+  onRemoveEntry: (id: string) => void;
+  onClearHistory: () => void;
 }
 
-export function History({ entries }: HistoryProps) {
+export function History({ entries, onRemoveEntry, onClearHistory }: HistoryProps) {
   return (
     <div style={{ marginTop: '24px' }}>
-      <h3 style={{ marginBottom: '8px' }}>History</h3>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+        <h3 style={{ margin: 0 }}>History</h3>
+        {entries.length > 0 && (
+          <button
+            onClick={onClearHistory}
+            style={{
+              background: 'none',
+              border: 'none',
+              color: '#ff4444',
+              cursor: 'pointer',
+              padding: '4px 8px',
+              fontSize: '14px'
+            }}
+          >
+            Clear All
+          </button>
+        )}
+      </div>
       <div
         style={{
           maxHeight: '200px',
@@ -32,10 +51,25 @@ export function History({ entries }: HistoryProps) {
                   alignItems: 'center'
                 }}
               >
-                <span>{entry.name}</span>
-                <span style={{ color: '#666', fontSize: '12px' }}>
-                  {new Date(entry.timestamp).toLocaleString()}
-                </span>
+                <div style={{ display: 'flex', flexDirection: 'column' }}>
+                  <span>{entry.name}</span>
+                  <span style={{ color: '#666', fontSize: '12px' }}>
+                    {new Date(entry.timestamp).toLocaleString()}
+                  </span>
+                </div>
+                <button
+                  onClick={() => onRemoveEntry(entry.id)}
+                  style={{
+                    background: 'none',
+                    border: 'none',
+                    color: '#ff4444',
+                    cursor: 'pointer',
+                    padding: '4px 8px',
+                    fontSize: '16px'
+                  }}
+                >
+                  ×
+                </button>
               </li>
             ))}
           </ul>
